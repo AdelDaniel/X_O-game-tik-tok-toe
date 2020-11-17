@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
         import android.graphics.Color;
         import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
     int randomRowValue;
     int randomColValue;
+    ProgressDialog progress ;
 
 
     int firstPlayerWinningNumbers ,secondPlayerWinningNumbers ,drawNumbers;
@@ -47,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         firstWinnerTextView = findViewById(R.id.first_winner_text_view);
         secondWinnerTextView = findViewById(R.id.second_winner_text_view);
         drawTextView = findViewById(R.id.draw_text_view);
+
+        progress = new ProgressDialog(this);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setMessage("\uD83E\uDD14 Thinking \uD83E\uDD14");
+
 
         Bundle bundle = getIntent().getExtras();
         typeOfPlaying = bundle.getString("Type");
@@ -153,7 +161,16 @@ public class MainActivity extends AppCompatActivity {
                 gameFinished("No Winner!" ,null);
         }
         if(typeOfPlaying.contains("Single")  && player == Players.secondPlayer && numOfPlaying<9 && !isGameFinished){
-            computer();
+            progress.show();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Do something after 250  ms
+                    computer();
+                    progress.dismiss();
+                }
+            }, 250);
         }
     }
 
